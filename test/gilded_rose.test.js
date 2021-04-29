@@ -2,21 +2,44 @@ const {Shop, Item} = require("../src/gilded_rose");
 
 describe("Gilded Rose", function() {
   describe("Default goods", () => {
+    let gildedRose;
+    beforeAll(() => {
+      // name, sellIn, quality
+      const item = new Item("Elixir of the Mongoose", 5, 7)
+      gildedRose = new Shop([item]);
+    })
     describe("Sell date hasn't passed", () => {
+      let updatedItem;
+      beforeAll(() => {
+        gildedRose.updateQuality() // 6
+        gildedRose.updateQuality() // 5
+        updatedItem = gildedRose.updateQuality() // 4
+      })
       it("should degrade quality by three", () => {
+        expect(updatedItem[0].quality).toBe(4)
       })
       it("should subtract sellIn by three", () => {
+        expect(updatedItem[0].sellIn).toBe(2)
       })
       describe("The quality is never negative", () => {
         it("should be greater or equal to 0", () => {
+          expect(updatedItem[0].quality).toBeGreaterThanOrEqual(0)
         })
       })
     })
     describe("Sell date has passed", () => {
+      let updatedItem;
+      beforeAll(() => {
+        gildedRose.updateQuality() // 3
+        gildedRose.updateQuality() // 2
+        updatedItem = gildedRose.updateQuality() // 0
+      })
       it("should degrade quality twice as fast", () => {
+        expect(updatedItem[0].quality).toBe(0)
       })
       describe("The quality is never negative", () => {
         it("should be greater or equal to 0", () => {
+          expect(updatedItem[0].quality).toBeGreaterThanOrEqual(0)
         })
       })
     })
