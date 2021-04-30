@@ -6,34 +6,29 @@ class Item {
   }
 }
 
+const specialItens = ["Sulfuras", "Aged Brie", "Backstage Passes"]
+
+const isSpecialItem = (name) => specialItens.includes(name)
+
 class Shop {
   constructor(items = []) {
     this.items = items;
   }
   updateQuality() {
     for (let i = 0; i < this.items.length; i++) {
-      if (
-        this.items[i].name != "Aged Brie" &&
-        this.items[i].name != "Backstage Passes"
-      ) {
-        if (this.items[i].quality > 0) {
-          if (this.items[i].name != "Sulfuras") {
-            this.items[i].quality = this.items[i].quality - 1;
-          }
-        }
+      const { name, quality } = this.items[i]
+
+      if (!isSpecialItem(name) && quality > 0) {
+        this.items[i].quality = this.items[i].quality - 1;
       } else {
         if (this.items[i].quality < 50) {
           this.items[i].quality = this.items[i].quality + 1;
           if (this.items[i].name == "Backstage Passes") {
             if (this.items[i].sellIn < 11) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
+              this.items[i].quality = this.items[i].quality + 1;
             }
             if (this.items[i].sellIn < 6) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
+              this.items[i].quality = this.items[i].quality + 1;
             }
           }
         }
