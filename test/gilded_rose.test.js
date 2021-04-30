@@ -87,15 +87,35 @@ describe("Gilded Rose", function() {
   })
 
   describe("Sulfuras", () => {
-    describe("Stays with the same quality of 80 over time", () => {
-      it("should have the same quality with SellIn = 0", () => {
+    // sulfuras
+      // nao tem data de expiração
+      // qualidade nunca diminui
+      // tem uma qualidade imutavel de 80
+    describe("When it's within the expiration date", () => {
+      let gildedRose;
+      beforeAll(() => {
+        // name, sellIn, quality
+        const item = new Item("Sulfuras, Hand of Ragnaros", 2, 80);
+        gildedRose = new Shop([item])
+      })
 
+      it("should have the same quality", () => {
+        gildedRose.updateQuality()
+        const updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(80)
       })
-      it("should have the same quality with SellIn = 5", () => {
-        
+    })
+    describe("When it's not within the expiration date", () => {
+      let gildedRose;
+      beforeAll(() => {
+        const item = new Item("Sulfuras, Hand of Ragnaros", -1, 80)
+        gildedRose = new Shop([item])
       })
-      it("should have the same quality with SellIn = 10", () => {
-        
+
+      it("should have the same quality", () => {
+        gildedRose.updateQuality()
+        const updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(80)
       })
     })
   })
