@@ -16,9 +16,12 @@ Bastante simples, não é? Bem, agora que as coisas ficam interessantes:
 
 * Quando a data de venda do item tiver passado, a qualidade (`quality`) do item diminui duas vezes mais rapido.
 * A qualidade (`quality`) do item não pode ser negativa
-* O "Queijo Brie envelhecido" (`Aged Brie`), aumenta sua qualidade (`quality`) em `1` unidade a medida que envelhece.
 * A qualidade (`quality`) de um item não pode ser maior que 50.
+
+* O "Queijo Brie envelhecido" (`Aged Brie`), aumenta sua qualidade (`quality`) em `1` unidade a medida que envelhece.
+
 * O item "Sulfuras" (`Sulfuras`), por ser um item lendário, não precisa ter uma data de venda (`SellIn`) e sua qualidade (`quality`) não precisa ser diminuida.
+
 * O item "Entrada para os Bastidores" (`Backstage Passes`), assim como o "Queijo Brie envelhecido", aumenta sua qualidade (`quality`) a medida que o dia da venda (`SellIn`) se aproxima;
   * A qualidade (`quality`) aumenta em `2` unidades quando a data de venda (`SellIn`) é igual ou menor que `10`.
   * A qualidade (`quality`) aumenta em `3` unidades quando a data de venda (`SellIn`) é igual ou menor que `5`.
