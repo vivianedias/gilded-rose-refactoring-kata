@@ -46,20 +46,42 @@ describe("Gilded Rose", function() {
   })
 
   describe("Aged Brie", () => {
-    describe("When sellIn date passes", () => {
-      it("should increase the quality", () => {
-
+    // aged brie
+      // quando está na validade
+        // sua qualidade aumenta cada dia que passa
+        // sua qualidade não pode ser maior que zero
+      // quando nao esta na validade
+        // a qualidade não muda
+    let gildedRose;
+    beforeAll(() => {
+      // name, sellIn, quality
+      const item = new Item("Aged Brie", 52, 49);
+      gildedRose = new Shop([item])
+    })
+    describe("When it's within the expiration date", () => {
+      let updatedItem;
+      it("should increase the quality", () => { // 51
+        updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(50)
       })
       it("should not be bigger than 50", () => {
-
+        updatedItem = gildedRose.updateQuality() // 50
+        expect(updatedItem[0].quality).toBe(50)
+      })
+      it("should decrease the sellIn date", () => {
+        expect(updatedItem[0].sellIn).toBe(50)
       })
     })
-    describe("The quality is never negative", () => {
-      it("should be >= 0 with a SellIn >= 0", () => {
 
+    describe("When it's not within the expiration date", () => {
+      beforeAll(() => {
+        for (let i = 0; i < 50; i++) {
+          gildedRose.updateQuality()
+        }
       })
-      it("should be >= 0 with SellIn = 0", () => {
-
+      it("should keep the same quality", () => {
+        updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(50)
       })
     })
   })
