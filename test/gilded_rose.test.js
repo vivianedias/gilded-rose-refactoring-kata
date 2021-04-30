@@ -121,28 +121,47 @@ describe("Gilded Rose", function() {
   })
 
   describe("Backstage passes", () => {
-    describe("Increases in quality as its SellIn value approaches", () => {
+    // backstage passes
+      // aumenta 2x quando a data de expiração é <= 10
+      // aumenta 3x quando a data de expiração é <= 5
+      // a qualidade vai direto a 0 quando a data de expiraçao for < 0
+    describe("When it's within the expiration date", () => {
+      let gildedRose;
+      beforeAll(() => {
+        // name, sellIn, quality
+        const item = new Item("Backstage passes to a TAFKAL80ETC concert", 10, 20)
+        gildedRose = new Shop([item])
+      })
       describe("Increases by 2 when there are 10 days or less", () => {
-        it("should increase 2x when SellIn = 10", () => {
-
-        })
-        it("should not be bigger than 50", () => {
-
+        it("should increase 2x with SellIn <= 10", () => {
+          const updatedItem = gildedRose.updateQuality()
+          expect(updatedItem[0].quality).toBe(22)
         })
       })
 
       describe("Increases by 3 when there are 5 days or less", () => {
-        it("should increase 3x when SellIn = 5", () => {
-
-        })
-        it("should not be bigger than 50", () => {
-
+        it("should increase 3x when SellIn <= 5", () => {
+          for (let i = 0; i < 4; i++) {
+            gildedRose.updateQuality()
+          }
+          const updatedItem = gildedRose.updateQuality()
+          expect(updatedItem[0].quality).toBe(33)
         })
       })
     })
-    describe("The Quality is never negative", () => {
-      it("should be 0 with a negative SellIn", () => {
-
+    describe("When not it's within the expiration date", () => {
+      let gildedRose;
+      beforeAll(() => {
+        // name, sellIn, quality
+        const item = new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49)
+        gildedRose = new Shop([item])
+        for (let i = 0; i < 10; i++) {
+          gildedRose.updateQuality()
+        }
+      })
+      it("should be 0", () => {
+        const updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(0)
       })
     })
   })
