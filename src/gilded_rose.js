@@ -9,16 +9,18 @@ class Item {
 class Shop {
   constructor(items = []) {
     this.items = items;
-    this.specialItens = [
-      "Sulfuras",
-      "Aged Brie",
-      "Backstage Passes",
-      "Conjured",
-    ];
+    this.specialItens = /^(sulfuras|aged brie|backstage passes|conjured)/gi;
+  }
+
+  padronizeName(name) {
+    const specialItensNameMatch = name.match(this.specialItens);
+    const firstMatchSpecialItemName =
+      specialItensNameMatch && specialItensNameMatch[0];
+    return (firstMatchSpecialItemName || name).toLowerCase();
   }
 
   isDefaultItem(name) {
-    return !this.specialItens.includes(name);
+    return !name.match(this.specialItens);
   }
 
   getDefaultItemQuality(sellIn, quality) {
@@ -33,70 +35,64 @@ class Shop {
     return newQuality;
   }
 
-  getSpecialItemQuality({ sellIn, quality, name }) {
-    if (name === "Conjured") {
-      return quality >= 2 ? quality - 2 : 0;
+  getBackstagePassesQuality(sellIn, quality) {
+    if (sellIn < 0) return 0;
+
+    let newQuality = quality;
+
+    if (sellIn <= 10 && newQuality < 50) {
+      newQuality += 1;
     }
 
+    if (sellIn <= 5 && newQuality < 50) {
+      newQuality += 1;
+    }
+
+    return newQuality;
+  }
+
+  getSpecialItemQuality(sellIn, quality) {
     let newQuality = quality < 50 ? quality + 1 : quality;
 
-    if (name === "Backstage Passes") {
-      if (sellIn < 0) return 0
-
-      if (sellIn <= 10 && newQuality < 50) {
-        newQuality += 1;
-      }
-
-      if (sellIn <= 5 && newQuality < 50) {
-        newQuality += 1;
-      }
-    }
-
-    return newQuality
+    return {
+      conjured: quality >= 2 ? quality - 2 : 0,
+      "aged brie": newQuality,
+      "backstage passes": this.getBackstagePassesQuality(sellIn, newQuality),
+      sulfuras: quality,
+    };
   }
 
   updateQuality() {
     const items = this.items.map(({ name, sellIn, quality }) => {
-      if (name === "Sulfuras")
-        return {
-          name,
-          sellIn,
-          quality,
-        };
+      const padronizedName = this.padronizeName(name);
 
       let newSellIn = sellIn;
-      let specialItemQuality;
-      let defaultItemQuality;
 
-      newSellIn -= 1;
+      if (this.isDefaultItem(padronizedName) && quality > 0) {
+        newSellIn -= 1;
 
-      const sellInAndName = {
-        sellIn: newSellIn,
-        name,
-      };
-
-      if (this.isDefaultItem(name) && quality > 0) {
-        defaultItemQuality = this.getDefaultItemQuality(
+        const defaultItemQuality = this.getDefaultItemQuality(
           newSellIn,
           quality
         );
-          
+
         return {
           quality: defaultItemQuality,
-          ...sellInAndName,
+          sellIn: newSellIn,
+          name,
         };
       }
 
-      specialItemQuality = this.getSpecialItemQuality({
-        sellIn: newSellIn,
-        quality,
-        name
-      })
+      const specialItemQuality = this.getSpecialItemQuality(
+        newSellIn - 1,
+        quality
+      )[padronizedName];
 
       return {
         quality: specialItemQuality,
-        ...sellInAndName
-      }
+        sellIn: padronizedName === "sulfuras" ? sellIn : newSellIn - 1,
+        name,
+      };
     });
 
     this.items = items;

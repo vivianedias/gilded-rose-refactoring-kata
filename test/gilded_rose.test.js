@@ -95,7 +95,7 @@ describe("Gilded Rose", function() {
       let gildedRose;
       beforeAll(() => {
         // name, sellIn, quality
-        const item = new Item("Sulfuras", 2, 80);
+        const item = new Item("Sulfuras, Hand of Ragnaros", 2, 80);
         gildedRose = new Shop([item])
       })
 
@@ -108,7 +108,7 @@ describe("Gilded Rose", function() {
     describe("When it's not within the expiration date", () => {
       let gildedRose;
       beforeAll(() => {
-        const item = new Item("Sulfuras", -1, 80)
+        const item = new Item("Sulfuras, Hand of Ragnaros", -1, 80)
         gildedRose = new Shop([item])
       })
 
@@ -129,7 +129,7 @@ describe("Gilded Rose", function() {
       let gildedRose;
       beforeAll(() => {
         // name, sellIn, quality
-        const item = new Item("Backstage Passes", 10, 20)
+        const item = new Item("Backstage passes to a TAFKAL80ETC concert", 10, 20)
         gildedRose = new Shop([item])
       })
       describe("Increases by 2 when there are 10 days or less", () => {
@@ -153,7 +153,7 @@ describe("Gilded Rose", function() {
       let gildedRose;
       beforeAll(() => {
         // name, sellIn, quality
-        const item = new Item("Backstage Passes", 10, 49)
+        const item = new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49)
         gildedRose = new Shop([item])
         for (let i = 0; i < 10; i++) {
           gildedRose.updateQuality()
