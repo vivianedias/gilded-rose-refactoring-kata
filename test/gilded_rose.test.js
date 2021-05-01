@@ -145,7 +145,7 @@ describe("Gilded Rose", function() {
             gildedRose.updateQuality()
           }
           const updatedItem = gildedRose.updateQuality()
-          expect(updatedItem[0].quality).toBe(33)
+          expect(updatedItem[0].quality).toBe(34)
         })
       })
     })
