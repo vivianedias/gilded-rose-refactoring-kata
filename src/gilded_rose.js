@@ -62,38 +62,30 @@ class Shop {
     };
   }
 
+  getNewItemQualityAndSellIn({ name, sellIn, quality }) {
+    const padronizedName = this.padronizeName(name);
+
+    let newQuality;
+
+    if (this.isDefaultItem(padronizedName) && quality > 0) {
+      newQuality = this.getDefaultItemQuality(sellIn - 1, quality);
+    } else {
+      newQuality = this.getSpecialItemQuality(sellIn - 1, quality)[
+        padronizedName
+      ];
+    }
+
+    return {
+      quality: newQuality,
+      sellIn: padronizedName === "sulfuras" ? sellIn : sellIn - 1,
+      name,
+    };
+  }
+
   updateQuality() {
-    const items = this.items.map(({ name, sellIn, quality }) => {
-      const padronizedName = this.padronizeName(name);
-
-      let newSellIn = sellIn;
-
-      if (this.isDefaultItem(padronizedName) && quality > 0) {
-        newSellIn -= 1;
-
-        const defaultItemQuality = this.getDefaultItemQuality(
-          newSellIn,
-          quality
-        );
-
-        return {
-          quality: defaultItemQuality,
-          sellIn: newSellIn,
-          name,
-        };
-      }
-
-      const specialItemQuality = this.getSpecialItemQuality(
-        newSellIn - 1,
-        quality
-      )[padronizedName];
-
-      return {
-        quality: specialItemQuality,
-        sellIn: padronizedName === "sulfuras" ? sellIn : newSellIn - 1,
-        name,
-      };
-    });
+    const items = this.items.map((item) =>
+      this.getNewItemQualityAndSellIn(item)
+    );
 
     this.items = items;
 
