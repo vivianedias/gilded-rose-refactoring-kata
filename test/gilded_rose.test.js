@@ -149,7 +149,7 @@ describe("Gilded Rose", function() {
         })
       })
     })
-    describe("When not it's within the expiration date", () => {
+    describe("When it's not within the expiration date", () => {
       let gildedRose;
       beforeAll(() => {
         // name, sellIn, quality
@@ -162,6 +162,22 @@ describe("Gilded Rose", function() {
       it("should be 0", () => {
         const updatedItem = gildedRose.updateQuality()
         expect(updatedItem[0].quality).toBe(0)
+      })
+    })
+  })
+
+  describe("Conjured", () => {
+    let gildedRose;
+    beforeAll(() => {
+      // name, sellIn, quality
+      const item = new Item("Conjured", 3, 6);
+      gildedRose = new Shop([item])
+      gildedRose.updateQuality()
+    })
+    describe("Decreases the quality twice as fast", () => {
+      test("after two days, quality is 2", () => {
+        const updatedItem = gildedRose.updateQuality()
+        expect(updatedItem[0].quality).toBe(2)
       })
     })
   })

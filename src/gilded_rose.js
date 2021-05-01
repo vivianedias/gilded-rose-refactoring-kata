@@ -17,8 +17,42 @@ class Shop {
     ];
   }
 
-  isSpecialItem(name) {
-    return this.specialItens.includes(name);
+  isDefaultItem(name) {
+    return !this.specialItens.includes(name);
+  }
+
+  getDefaultItemQuality(sellIn, quality) {
+    let newQuality = quality;
+
+    newQuality -= 1;
+
+    if (sellIn < 0 && newQuality > 0) {
+      newQuality -= 1;
+    }
+
+    return newQuality;
+  }
+
+  getSpecialItemQuality({ sellIn, quality, name }) {
+    if (name === "Conjured") {
+      return quality >= 2 ? quality - 2 : 0;
+    }
+
+    let newQuality = quality < 50 ? quality + 1 : quality;
+
+    if (name === "Backstage Passes") {
+      if (sellIn < 0) return 0
+
+      if (sellIn <= 10 && newQuality < 50) {
+        newQuality += 1;
+      }
+
+      if (sellIn <= 5 && newQuality < 50) {
+        newQuality += 1;
+      }
+    }
+
+    return newQuality
   }
 
   updateQuality() {
@@ -31,53 +65,38 @@ class Shop {
         };
 
       let newSellIn = sellIn;
-      let newQuality = quality;
+      let specialItemQuality;
+      let defaultItemQuality;
 
-      newSellIn = newSellIn - 1;
+      newSellIn -= 1;
 
       const sellInAndName = {
         sellIn: newSellIn,
         name,
       };
 
-      if (newQuality > 0 && newQuality < 50) {
-        if (!this.isSpecialItem(name)) {
-          newQuality = newQuality - 1;
-
-          if (newSellIn < 0 && newQuality > 0) {
-            newQuality = newQuality - 1;
-          }
-
-          return {
-            quality: newQuality,
-            ...sellInAndName,
-          };
-        }
-
-        newQuality = newQuality + 1;
+      if (this.isDefaultItem(name) && quality > 0) {
+        defaultItemQuality = this.getDefaultItemQuality(
+          newSellIn,
+          quality
+        );
+          
+        return {
+          quality: defaultItemQuality,
+          ...sellInAndName,
+        };
       }
 
-      if (name === "Backstage Passes") {
-        if (newSellIn < 0) {
-          return {
-            quality: newQuality - newQuality,
-            ...sellInAndName,
-          };
-        }
-
-        if (newSellIn <= 10 && newQuality < 50) {
-          newQuality = newQuality + 1;
-        }
-
-        if (newSellIn <= 5 && newQuality < 50) {
-          newQuality = newQuality + 1;
-        }
-      }
+      specialItemQuality = this.getSpecialItemQuality({
+        sellIn: newSellIn,
+        quality,
+        name
+      })
 
       return {
-        quality: newQuality,
-        ...sellInAndName,
-      };
+        quality: specialItemQuality,
+        ...sellInAndName
+      }
     });
 
     this.items = items;
